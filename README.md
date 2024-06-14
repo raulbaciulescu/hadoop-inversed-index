@@ -1,4 +1,7 @@
-Hadoop Project: Using the already configured Hadoop VM (either VM or docker version) from above, 
+## Hadoop Project
+
+
+Requirements: Using the already configured Hadoop VM (either VM or docker version) from above, 
 together with the development environment write an inversed index app for
 a set of books as data. 
 In order to build the inversed index you need to account for a stop word list
