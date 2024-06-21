@@ -14,7 +14,7 @@ public class IndexCombiner extends Reducer<Text, Text, Text, Text> {
             int splitIndex = key.toString().indexOf("@");
 
             fileAtWordLineNumber.set(key.toString().substring(splitIndex + 1) + ":" + sum);
-            key.set(key.toString().substring(0, splitIndex));
+            key.set("&" + key.toString().substring(0, splitIndex) + "&");
             context.write(key, fileAtWordLineNumber);
         }
     }

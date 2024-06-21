@@ -9,15 +9,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.text.Normalizer;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class IndexMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text wordAtFileNameKey = new Text();
     private long lineNumber = 0;
-    private final static Set<String> stopWords = new HashSet<>();
+    private final static List<String> stopWords = new ArrayList<>();
 
     @Override
     public void setup(Context context) throws IOException {
@@ -50,10 +49,20 @@ public class IndexMapper extends Mapper<LongWritable, Text, Text, Text> {
         while (tokenizer.hasMoreTokens()) {
             String fileName = split.getPath().getName().split("\\.")[0];
             String word = tokenizer.nextToken();
-            if (!stopWords.contains(word)) {
+            word = transform(word);
+            if (!stopWords.contains(word) && !Objects.equals(fileName, "stopwords")) {
                 wordAtFileNameKey.set(word + "@" + fileName);
                 context.write(wordAtFileNameKey, new Text(String.valueOf(lineNumber)));
             }
         }
+    }
+
+    public static String transform(String word) {
+        if (word == null) {
+            return null;
+        }
+        String lowercasedWord = word.toLowerCase();
+
+        return lowercasedWord.replaceAll("[\\p{Punct}]", "");
     }
 }
